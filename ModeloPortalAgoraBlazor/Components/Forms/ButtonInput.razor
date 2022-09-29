@@ -1,0 +1,76 @@
+﻿
+<button id="@id.ToString()"
+                         class="@classText"
+                         type="@typeButton"
+                         disabled="@Disabled"
+        >
+    @ChildContent
+</button>
+
+@code {
+    Guid id = Guid.NewGuid();
+    string typeButton = "";
+    string colorButton = "";
+    string sizeButton = "";
+    string classText = "";
+    
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    
+    [Parameter]
+    public TypeButton Type  { get; set; }
+
+    [Parameter]
+    public ColorButton Color { get; set; }
+
+    [Parameter]
+    public SizeButton Size { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; } = false;
+    
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        typeButton = Type switch
+        {
+            TypeButton.button => TypeButton.button.ToString(),
+            TypeButton.submit => TypeButton.submit.ToString(),
+            TypeButton.reset => TypeButton.reset.ToString(),
+            _ => typeButton
+        };
+        
+        sizeButton = Size switch
+        {
+            SizeButton.normal => "h-12 px-8 mw-60",
+            SizeButton.small => "h-7 px-5 mw-36 text-xs",
+            _ => sizeButton
+        };
+
+        if (Disabled)
+        {
+            colorButton = "bg-gray-400 text-white";
+        }
+        else
+        {
+            colorButton = Color switch
+            {
+                ColorButton.primary => "bg-primary hover:bg-primaryLight active:opacity-95 active:scale-95",
+                ColorButton.secondary => "bg-secondary text-white hover:bg-secondaryLight active:opacity-95 active:scale-95",
+                ColorButton.outlinePrimary => "text-gray-700 hover:bg-primary hover:text-white active:opacity-95 active:scale-95",
+                ColorButton.outlineSecondary => "text-gray-700 hover:bg-secondary hover:text-white active:opacity-95 active:scale-95",
+                _ => colorButton
+            };
+        }
+        classText = $"{colorButton} {sizeButton} outline-none rounded-full transition-all ease-in-out";
+
+        return base.OnParametersSetAsync();
+    }
+
+
+}
+

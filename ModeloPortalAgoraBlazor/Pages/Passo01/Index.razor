@@ -1,0 +1,92 @@
+﻿@page "/passo01"
+
+@using ModeloPortalAgoraBlazor.Dtos
+@using ModeloPortalAgoraBlazor.State
+@using Microsoft.AspNetCore.Components
+@using System.Reflection.Emit
+@using System.Text.Json.Serialization
+@inject HttpClient Http
+
+<PageTitle>Counter</PageTitle>
+
+<HeadPasso01 />
+
+<section class='my-6'>
+
+    <EditForm OnValidSubmit="Submit" Model="@DadosIniciais" class='my-6'>
+        <DataAnnotationsValidator/>
+        <div class='grid grid-cols-1 md:grid-cols-4 gap-1 md:gap-4 m-0 md:mt-6'>
+            <TextInput Type="text" @bind-Value="@DadosIniciais.NomeUsuario"/>
+            <TextInput Type="text" @bind-Value="@DadosIniciais.Cnpj"/>
+            <TextInput Type="email" @bind-Value="@DadosIniciais.Email"/>
+            <SelectInput @bind-Value="@DadosIniciais.Teste">
+                
+                @if (Bancos == null)
+                {
+                    <option value="">Carregando dados...</option>
+                }
+                else
+                {
+                    <option value="">Selecione um banco</option>
+                    @foreach (var banco in Bancos)
+                    {
+                        <option value="@banco.value">@banco.label</option>
+                    }
+                }
+            </SelectInput>
+        </div>
+        
+                    <button type="submit"
+                            class="h-12 px-8 mw-60 bg-primary hover:bg-primaryLight outline-none rounded-full transition-all ease-in-out">
+                        Salvar111
+                    </button>
+    </EditForm>
+<span>@Erro</span>
+        
+        <div className='flex flex-row justify-between'>
+            <ButtonInput Type="@TypeButton.reset" Color="ColorButton.secondary" Size="SizeButton.small" Disabled="true">Secondary</ButtonInput>
+            <ButtonInput Type="@TypeButton.reset" Color="ColorButton.outlinePrimary" Size="SizeButton.small">Outline primary</ButtonInput>
+            <ButtonInput Type="@TypeButton.reset" Color="ColorButton.outlineSecondary" Size="SizeButton.small">Outline secondary</ButtonInput>
+        </div>
+
+</section>
+
+@code {
+    public EditContext editContext { get; set; }
+    public DadosIniciais DadosIniciais = new DadosIniciais();
+    private string Erro = "Tem erro";
+    string Status = "";
+
+    private SelectData[]? Bancos;
+
+    protected override async Task OnInitializedAsync()
+    {       
+        Bancos = await Http.GetFromJsonAsync<SelectData[]>("data/Bancos.json");
+    }
+
+    [Inject]
+    public ClienteState State { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (State == null)
+        {
+            State = new ClienteState();
+        }
+        Erro = "Mais um erro";
+    }
+
+    public void Submit()
+    {
+        Erro = "Deu erro";
+        StateHasChanged();
+    }
+
+    public class SelectData
+    {
+        [JsonPropertyName("value")]
+        public string? value { get; set; }
+        [JsonPropertyName("label")]
+        public string? label { get; set; }
+    }
+}

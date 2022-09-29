@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Modelo Portal Agora - Blazor</title>
+    <base href="/"/>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="css/app.css" rel="stylesheet"/>
+    <!--    <link href="ModeloPortalAgoraBlazor.styles.css" rel="stylesheet" />-->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        button: '#FFCDA9',
+                        buttonHover: '#ffe1cb',
+                        header: '#01464d',
+                        primary: '#FFCDA9',
+                        primaryLight: '#ffe1cb',
+                        secondary: '#00ad88',
+                        secondaryLight: '#00d3a6',
+                    }
+                },
+            },
+        }
+
+    </script>
+</head>
+
+<body>
+<div id="app">
+    <div class="w-full h-screen flex flex-col justify-center items-center">
+        <img src="load.svg"/>
+        <span class="text-teal mt-2">Carregando a aplicação...</span>
+    </div>
+
+</div>
+
+<script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>

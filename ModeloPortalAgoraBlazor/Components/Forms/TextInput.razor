@@ -1,0 +1,132 @@
+﻿@inherits Microsoft.AspNetCore.Components.Forms.InputText
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+@using System.Linq
+
+<div class="my-2 @colSpanText">
+    <div className='h-7'>
+        <label for="@id.ToString()" class="text-sm font-semibold text-gray-700">@LabelText</label>
+    </div>
+    <InputText id="@id.ToString()"
+               class="@classText"
+               type="@Type"
+               @attributes="@AdditionalAttributes"
+               @onfocus="@(() => ShowError = true)"
+               placeholder="@Placeholder"
+               @bind-Value="@CurrentValue"
+              />
+    @if (!string.IsNullOrWhiteSpace(Description))
+    {
+        <small class="text-xs ml-2 text-teal-400">@Description</small>
+    }
+    @if (ShowError)
+    {
+        @foreach (var message in EditContext.GetValidationMessages(FieldIdentifier))
+        {
+            <div class="text-xs ml-2 text-red-400">@message</div>
+        }
+    }
+    @if (EditContext.GetValidationMessages(FieldIdentifier).Any())
+    {
+        classText = "my-2 w-full col-span-1 border-[1px] border-red-300 px-3 py-3 text-md outline-none active:outline-none focus:border-red-400 h-12 " + CssClass;
+    }
+    @* else *@
+    @* { *@
+    @*     classText = "my-2 w-full col-span-1 border-[1px] border-gray-300 px-3 py-3 text-md outline-none active:outline-none focus:border-gray-400 h-12 " + CssClass; *@
+    @* } *@
+    @* @if (CssClass.Contains("modified") && !EditContext.GetValidationMessages(FieldIdentifier).Any() && !string.IsNullOrEmpty(SuccessMenssage)) *@
+    @* { *@
+    @*     <div>@string.Format(SuccessMenssage, this.Value)</div> *@
+    @* } *@
+    
+</div>
+
+
+@code {
+    Guid id = Guid.NewGuid();
+
+    [Parameter]
+    public bool ShowError { get; set; }
+
+    [Parameter]
+    public string LabelText { get; set; }
+
+    [Parameter]
+    public string Placeholder { get; set; }
+
+    [Parameter]
+    public string Description { get; set; }
+
+    [Parameter]
+    public string SuccessMenssage { get; set; }
+
+    [Parameter]
+    public string Type { get; set; }
+
+    [Parameter]
+    public int ColSpan { get; set; } 
+
+    [Parameter]
+    public string ToolTip { get; set; }
+
+    string classText = "";
+    string colSpanText = "";
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        Console.WriteLine("Tamanho " + ColSpan.ToString());
+        try
+        {
+            var displayAttribute = this.FieldIdentifier.Model.GetType().GetProperty(this.FieldIdentifier.FieldName).GetCustomAttributes<DisplayAttribute>();
+            if (displayAttribute != null)
+            {
+                var displayName = displayAttribute.FirstOrDefault().Name;
+                if (!string.IsNullOrEmpty(displayName) && string.IsNullOrEmpty(LabelText))
+                {
+                    LabelText = displayName;
+                }
+                var placeholder = displayAttribute.FirstOrDefault().Prompt;
+                if (!string.IsNullOrEmpty(placeholder) && string.IsNullOrEmpty(Placeholder))
+                {
+                    LabelText = placeholder;
+                }
+                var description = displayAttribute.FirstOrDefault().Description;
+                if (!string.IsNullOrEmpty(description) && string.IsNullOrEmpty(Description))
+                {
+                    Description = description;
+                }
+
+                if (ColSpan == 0)
+                {
+                    ColSpan = 1;
+                }
+                if (string.IsNullOrEmpty(ToolTip))
+                {
+                    ToolTip = string.Empty;
+                }
+                colSpanText = ColSpan == 0 ? string.Empty : $"md:col-span-{ColSpan}";
+            }
+            
+            if (EditContext.GetValidationMessages(FieldIdentifier).Any())
+            {
+                classText = $"my-2 w-full col-span-1 border-[1px] border-red-300 px-3 py-3 text-md outline-none active:outline-none focus:border-red-400 h-12 {CssClass}";
+            }
+            else
+            {
+                classText = $"my-2 w-full col-span-1 border-[1px] border-gray-300 px-3 py-3 text-md outline-none active:outline-none focus:border-gray-400 h-12 {CssClass}";
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return base.OnParametersSetAsync();
+    }
+
+}
