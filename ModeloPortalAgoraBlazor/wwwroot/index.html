@@ -9,6 +9,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="css/app.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/imask"></script>
     <!--    <link href="ModeloPortalAgoraBlazor.styles.css" rel="stylesheet" />-->
     <script>
         tailwind.config = {
@@ -39,6 +40,37 @@
 
 </div>
 
+<script>
+    window.mask = (id, mask) => {
+        var customMask = IMask(
+            document.getElementById(id), {
+                mask: mask
+            });
+    };
+
+    window.decimalMask = (id) => {
+        var customMask = IMask(
+            document.getElementById(id), {
+                mask: Number,
+                scale: 2,
+                min: 0,
+                thousandsSeparator: '.',
+                normalizeZeros: true,
+                padFractionalZeros: true,
+                radix: ',',
+                mapToRadix: ['.']
+            });
+    };
+
+    window.numericMask = (id) => {
+        var customMask = IMask(
+            document.getElementById(id), {
+                mask: Number,
+                scale: 0,
+                radix: ','
+            });
+    };
+</script>
 <script src="_framework/blazor.webassembly.js"></script>
 </body>
 

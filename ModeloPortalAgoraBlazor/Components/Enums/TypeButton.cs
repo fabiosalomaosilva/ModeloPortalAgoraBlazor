@@ -18,3 +18,10 @@ public enum ColorButton{
     outlinePrimary,
     outlineSecondary
 }
+
+public enum TypeMask{
+    none,
+    text,
+    numeric,
+    money
+}

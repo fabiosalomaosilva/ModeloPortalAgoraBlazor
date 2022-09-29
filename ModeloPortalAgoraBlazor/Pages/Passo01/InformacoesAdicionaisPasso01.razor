@@ -1,12 +1,12 @@
 ﻿@inherits Microsoft.AspNetCore.Components.Forms.DataAnnotationsValidator
 
-<EditForm Model="@DadosIniciais" class='my-6' OnValidSubmit="@OnSubmit" OnSubmit="@OnSubmit">
+<EditForm Model="@Model" class='my-6' OnValidSubmit="@OnSubmit" OnSubmit="@OnSubmit">
     <DataAnnotationsValidator/>
     <div class='grid grid-cols-1 md:grid-cols-4 gap-1 md:gap-4 m-0 md:mt-6'>
-        <TextInput Type="text" @bind-Value="@DadosIniciais.NomeUsuario"/>
-        <TextInput Type="text" @bind-Value="@DadosIniciais.Cnpj"/>
-        <TextInput Type="email" @bind-Value="@DadosIniciais.Email"/>
-        <SelectInput @bind-Value="@DadosIniciais.Teste">
+        <TextInput Type="text" @bind-Value="@Model.NomeUsuario"/>
+        <TextInput Type="text" @bind-Value="@Model.Cnpj"/>
+        <TextInput Type="email" @bind-Value="@Model.Email"/>
+        <SelectInput @bind-Value="@Model.Estado">
             @foreach (var dept in ListaTeste)
             {
                 <option value="@dept">@dept</option>
@@ -16,7 +16,7 @@
 </EditForm>
 
 @code {
-    public DadosIniciais DadosIniciais = new DadosIniciais();
+    public Passo01 Model = new Passo01();
     List<string> ListaTeste = new List<string> { "Teste 01", "Teste 02", "Teste 03" };
     [Parameter]
     public EventCallback OnSubmit { get; set; }

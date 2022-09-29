@@ -4,8 +4,12 @@
 @using System.Linq
 
 <div class="my-2 @colSpanText">
-    <div className='h-7'>
+    <div class="h-7">
         <label for="@id.ToString()" class="text-sm font-semibold text-gray-700">@LabelText</label>
+                @if (ToolTipText != null && ToolTipText?.Length > 0)
+                {
+                    <Tooltip Text="@ToolTipText"/>
+                }
     </div>
     <InputSelect id="@id.ToString()" onchange="this.nextElementSibling.value=this.value"
                  class="@classText"
@@ -65,12 +69,12 @@
 
     [Parameter]
     public int ColSpan { get; set; } 
-
-    [Parameter]
-    public string ToolTip { get; set; }
     
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+    
+    [Parameter]
+    public string ToolTipText { get; set; }
 
     string classText = "";
     string colSpanText = "";
@@ -107,10 +111,7 @@
                 {
                     ColSpan = 1;
                 }
-                if (string.IsNullOrEmpty(ToolTip))
-                {
-                    ToolTip = string.Empty;
-                }
+
                 colSpanText = ColSpan == 0 ? string.Empty : $"md:col-span-{ColSpan}";
             }
             
