@@ -48,7 +48,7 @@
             });
     };
 
-    window.decimalMask = (id) => {
+    window.decimalMask = (id, max, min) => {
         var customMask = IMask(
             document.getElementById(id), {
                 mask: Number,
@@ -58,16 +58,20 @@
                 normalizeZeros: true,
                 padFractionalZeros: true,
                 radix: ',',
-                mapToRadix: ['.']
+                mapToRadix: ['.'],
+                min: (min === undefined || min === null) ? 0 : min,
+                max: (max === undefined || min === null) ? 0 : max
             });
     };
 
-    window.numericMask = (id) => {
+    window.numericMask = (id, max, min) => {
         var customMask = IMask(
             document.getElementById(id), {
                 mask: Number,
                 scale: 0,
-                radix: ','
+                radix: ',',
+                min: (min === undefined || min === null) ? 0 : min,
+                max: (max === undefined || min === null) ? 0 : max
             });
     };
 </script>

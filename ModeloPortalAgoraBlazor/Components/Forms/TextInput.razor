@@ -4,8 +4,8 @@
 @using System.Linq
 @inject IJSRuntime JSRuntime
 
-<div class="my-2 @colSpanText">
-    <div class="h-7">
+<div class="my-1 @colSpanText">
+    <div class="h-6">
         <label for="@id.ToString()" class="text-sm font-semibold text-gray-700">@LabelText</label>
         @if (ToolTipText != null && ToolTipText?.Length > 0)
         {
@@ -13,13 +13,13 @@
         }
     
     </div>
-    <InputText id="@id.ToString()"
-               class="@classText"
-               type="@Type"
-               @attributes="@AdditionalAttributes"
-               @onfocus="@(() => ShowError = true)"
-               placeholder="@Placeholder"
-               @bind-Value="@CurrentValue"/>
+        <InputText id="@id.ToString()"
+                   class="@classText"
+                   @attributes="@AdditionalAttributes"
+                   @onfocus="@(() => ShowError = true)"
+                   placeholder="@Placeholder"
+                   @bind-Value="@CurrentValue"/>
+
     @if (!string.IsNullOrWhiteSpace(Description))
     {
         <small class="text-xs ml-2 text-teal-400">@Description</small>
@@ -70,11 +70,15 @@
     [Parameter]
     public string SuccessMenssage { get; set; }
 
-    [Parameter]
-    public string Type { get; set; }
 
     [Parameter]
     public int ColSpan { get; set; }
+    
+    [Parameter]
+    public int MaxNumberValue { get; set; }
+
+    [Parameter]
+    public int MinNumberValue { get; set; }
 
     [Parameter]
     public string ToolTipText { get; set; }
@@ -92,11 +96,11 @@
         }
         if (firstRender && TypeMask == TypeMask.money)
         {
-            await JSRuntime.InvokeVoidAsync("decimalMask", id.ToString());
+            await JSRuntime.InvokeVoidAsync("decimalMask", id.ToString(), MaxNumberValue, MinNumberValue);
         }
         if (firstRender && TypeMask == TypeMask.numeric)
         {
-            await JSRuntime.InvokeVoidAsync("numericMask", id.ToString());
+            await JSRuntime.InvokeVoidAsync("numericMask", id.ToString(), MaxNumberValue, MinNumberValue);
         }
         
         base.OnAfterRenderAsync(firstRender);
@@ -134,8 +138,6 @@
                     ToolTipText = string.Empty;
                 }
                 colSpanText = ColSpan == 0 ? string.Empty : $"md:col-span-{ColSpan}";
-
-
             }
 
             if (EditContext.GetValidationMessages(FieldIdentifier).Any())

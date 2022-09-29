@@ -1,24 +1,25 @@
-﻿@inherits Microsoft.AspNetCore.Components.Forms.InputText
+﻿@inherits Microsoft.AspNetCore.Components.Forms.InputDate<DateTime>
 @using System.ComponentModel.DataAnnotations
 @using System.Reflection
 @using System.Linq
+@inject IJSRuntime JSRuntime
 
 <div class="my-1 @colSpanText">
     <div class="h-6">
         <label for="@id.ToString()" class="text-sm font-semibold text-gray-700">@LabelText</label>
-                @if (ToolTipText != null && ToolTipText?.Length > 0)
-                {
-                    <Tooltip Text="@ToolTipText"/>
-                }
+        @if (ToolTipText != null && ToolTipText?.Length > 0)
+        {
+            <Tooltip Text="@ToolTipText"/>
+        }
+    
     </div>
-    <InputSelect id="@id.ToString()" onchange="this.nextElementSibling.value=this.value"
-                 class="@classText"
-                 @attributes="@AdditionalAttributes"
-                 @onfocus="@(() => ShowError = true)"
-                 placeholder="@Placeholder"
-                 @bind-Value="@CurrentValue">
-        @ChildContent
-    </InputSelect>
+        <InputDate id="@id.ToString()"
+                   class="@classText"
+                   @attributes="@AdditionalAttributes"
+                   @onfocus="@(() => ShowError = true)"
+                   placeholder="@Placeholder"
+                   @bind-Value="@CurrentValue"/>
+
     @if (!string.IsNullOrWhiteSpace(Description))
     {
         <small class="text-xs ml-2 text-teal-400">@Description</small>
@@ -42,12 +43,17 @@
     @* { *@
     @*     <div>@string.Format(SuccessMenssage, this.Value)</div> *@
     @* } *@
-    
 </div>
 
 
 @code {
     Guid id = Guid.NewGuid();
+
+    [Parameter]
+    public string Mask { get; set; }
+
+    [Parameter]
+    public TypeMask TypeMask { get; set; }
 
     [Parameter]
     public bool ShowError { get; set; }
@@ -64,27 +70,43 @@
     [Parameter]
     public string SuccessMenssage { get; set; }
 
-    [Parameter]
-    public string Type { get; set; }
 
     [Parameter]
-    public int ColSpan { get; set; } 
+    public int ColSpan { get; set; }
     
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
-    
+    public int MaxNumberValue { get; set; }
+
+    [Parameter]
+    public int MinNumberValue { get; set; }
+
     [Parameter]
     public string ToolTipText { get; set; }
 
     string classText = "";
     string colSpanText = "";
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        return base.OnAfterRenderAsync(firstRender);
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {                
+        Console.WriteLine(ToolTipText);
+
+        if (firstRender &&  !string.IsNullOrEmpty(Mask) && TypeMask == TypeMask.text)
+        {
+            await JSRuntime.InvokeVoidAsync("mask", id.ToString(), Mask);
+        }
+        if (firstRender && TypeMask == TypeMask.money)
+        {
+            await JSRuntime.InvokeVoidAsync("decimalMask", id.ToString(), MaxNumberValue, MinNumberValue);
+        }
+        if (firstRender && TypeMask == TypeMask.numeric)
+        {
+            await JSRuntime.InvokeVoidAsync("numericMask", id.ToString(), MaxNumberValue, MinNumberValue);
+        }
+        
+        base.OnAfterRenderAsync(firstRender);
     }
 
-    protected override Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync()
     {
         try
         {
@@ -111,10 +133,13 @@
                 {
                     ColSpan = 1;
                 }
-
+                if (string.IsNullOrEmpty(ToolTipText))
+                {
+                    ToolTipText = string.Empty;
+                }
                 colSpanText = ColSpan == 0 ? string.Empty : $"md:col-span-{ColSpan}";
             }
-            
+
             if (EditContext.GetValidationMessages(FieldIdentifier).Any())
             {
                 classText = $"my-2 w-full col-span-1 border-[1px] border-red-300 px-3 py-3 text-md outline-none active:outline-none focus:border-red-400 h-12 {CssClass}";
@@ -129,7 +154,7 @@
             throw;
         }
 
-        return base.OnParametersSetAsync();
+        //return base.OnParametersSetAsync();
     }
 
 }

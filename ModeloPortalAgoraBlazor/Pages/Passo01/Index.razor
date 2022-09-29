@@ -1,62 +1,112 @@
 ﻿@page "/passo01"
 
-@using ModeloPortalAgoraBlazor.Dtos
 @using ModeloPortalAgoraBlazor.State
 @using Microsoft.AspNetCore.Components
-@using System.Reflection.Emit
 @using System.Text.Json.Serialization
-@inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <PageTitle>Counter</PageTitle>
 
 <HeadPasso01/>
-
-<section class="my-6">
-
+<div>
     <EditForm OnValidSubmit="Submit" Model="@Model" class="my-6">
-        <DataAnnotationsValidator/>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-1 md:gap-4 m-0 md:mt-6">
-            <TextInput Type="text" @bind-Value="@Model.NomeUsuario" TypeMask="@TypeMask.numeric" ToolTipText="Coloca aí alguma coisa grande para parecer importante" />
-            <TextInput Type="text" @bind-Value="@Model.Cnpj" Mask="00.000.000/0000-00" TypeMask="TypeMask.text"/>
-            <TextInput Type="email" @bind-Value="@Model.Email"/>
-            <SelectInput @bind-Value="@Model.Estado" ToolTipText="Coloca aí alguma coisa grande para parecer importante">
-                @if (Bancos == null)
-                {
-                    <option value="">Carregando dados...</option>
-                }
-                else
-                {
+        <section class="my-6">
+            <TitleSeparator Label="Informações Iniciais"/>
+            <DataAnnotationsValidator/>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-1 md:gap-4 m-0 md:mt-6">
+                <TextInput @bind-Value="@Model.NomeUsuario" ToolTipText="Também denominado login, é a sua identificação para entrar no Portal. Deverá ser usado, juntamente com a sua senha, sempre que você visitar o Portal ou quiser iniciar uma transação através da Ágora."/>
+                <SelectInput @bind-Value="@Model.PrincipalAtividade">
                     <option value="">Selecione um banco</option>
-                    @foreach (var banco in Bancos)
-                    {
-                        <option value="@banco.value">@banco.label</option>
-                    }
-                }
-            </SelectInput>
-        </div>
+                    <option value='Banco múltiplo'>Banco múltiplo</option>
+                    <option value='Banco de investimentos'>
+                        Banco de investimentos
+                    </option>
+                    <option value='Bolsa de valores e mercadorias'>
+                        Bolsa de valores e mercadorias
+                    </option>
+                    <option value='Clube de investimentos'>
+                        Clube de investimentos
+                    </option>
+                </SelectInput>
+                <TextInput @bind-Value="@Model.Telefone" Mask="(00) 0000-0000" TypeMask="TypeMask.text"/>
+                <NumberInput @bind-Value="@Model.Ramal" MaxNumberValue="999" TypeMask="TypeMask.numeric"/>
+                <TextInput @bind-Value="@Model.Email"/>
+                <TextInput @bind-Value="@Model.ConfirmarEmail"/>
+            </div>
+        </section>
 
-        <button type="submit"
-                class="h-12 px-8 mw-60 bg-primary hover:bg-primaryLight outline-none rounded-full transition-all ease-in-out">
-            Salvar111
-        </button>
+        <section class="my-6">
+            <TitleSeparator Label="Informações empresariais"/>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-1 md:gap-4 m-0 md:mt-6">
+                <TextInput @bind-Value="@Model.Cnpj" Mask="00.000.000/0000-00" TypeMask="TypeMask.text"/>
+                <TextInput @bind-Value="@Model.DenominacaoComercial" ColSpan="3"/>
+                <DateInput @bind-Value="@Model.DataConstituicao" Mask="00/00/0000"/>
+                <TextInput @bind-Value="@Model.FormaConstituicao" ColSpan="3"/>
+                <TextInput @bind-Value="@Model.Nire"/>
+
+                <SelectInput @bind-Value="@Model.PrincipalObjetoSocial">
+                    <option value="">Selecione uma atividade</option>
+                    <option value='Banco múltiplo'>Banco múltiplo</option>
+                    <option value='Banco de investimentos'>
+                        Banco de investimentos
+                    </option>
+                    <option value='Bolsa de valores e mercadorias'>
+                        Bolsa de valores e mercadorias
+                    </option>
+                    <option value='Clube de investimentos'>
+                        Clube de investimentos
+                    </option>
+                </SelectInput>
+                
+                <SelectInput @bind-Value="@Model.PrincipalAtividade">
+                    <option value="">Selecione uma atividade</option>
+                    <option value='Banco múltiplo'>Banco múltiplo</option>
+                    <option value='Banco de investimentos'>
+                        Banco de investimentos
+                    </option>
+                    <option value='Bolsa de valores e mercadorias'>
+                        Bolsa de valores e mercadorias
+                    </option>
+                    <option value='Clube de investimentos'>
+                        Clube de investimentos
+                    </option>
+                </SelectInput>
+                
+                <SelectInput @bind-Value="@Model.PrincipalObjetivoComercial">
+                    <option value="">Selecione uma atividade</option>
+                    <option value='Banco múltiplo'>Banco múltiplo</option>
+                    <option value='Banco de investimentos'>
+                        Banco de investimentos
+                    </option>
+                    <option value='Bolsa de valores e mercadorias'>
+                        Bolsa de valores e mercadorias
+                    </option>
+                    <option value='Clube de investimentos'>
+                        Clube de investimentos
+                    </option>
+                </SelectInput>
+                
+                
+                <TextInput @bind-Value="@Model.Cep" Mask="00.000-000" TypeMask="TypeMask.text"/>
+                <TextInput @bind-Value="@Model.Numero" />
+                <TextInput @bind-Value="@Model.Endereco" ColSpan="2"/>
+                <TextInput @bind-Value="@Model.Complemento"/>
+                <TextInput @bind-Value="@Model.Bairro"/>
+                <TextInput @bind-Value="@Model.Estado"/>
+                <TextInput @bind-Value="@Model.Cidade"/>
+            </div>
+            <div class="flex flex-row justify-between">
+                <ButtonInput Type="@TypeButton.button" OnClick="BackToDashBoard" Color="ColorButton.secondary" Size="SizeButton.normal">Cancelar</ButtonInput>
+                <ButtonInput Type="@TypeButton.submit" Color="ColorButton.secondary" Size="SizeButton.normal">Avançar</ButtonInput>
+            </div>
+
+
+        </section>
     </EditForm>
-    <div className='flex flex-row justify-between'>
-        <ButtonInput Type="@TypeButton.reset" Color="ColorButton.secondary" Size="SizeButton.small" Disabled="true">Secondary</ButtonInput>
-        <ButtonInput Type="@TypeButton.reset" Color="ColorButton.outlinePrimary" Size="SizeButton.small">Outline primary</ButtonInput>
-        <ButtonInput Type="@TypeButton.reset" Color="ColorButton.outlineSecondary" Size="SizeButton.small">Outline secondary</ButtonInput>
-    </div>
-
-</section>
+</div>
 
 @code {
     public Passo01 Model = new Passo01();
-
-    private SelectData[]? Bancos;
-
-    protected override async Task OnInitializedAsync()
-    {
-        Bancos = await Http.GetFromJsonAsync<SelectData[]>("data/Bancos.json");
-    }
 
     [Inject]
     public ClienteState State { get; set; }
@@ -69,9 +119,14 @@
         }
     }
 
-    public void Submit()
+    private void BackToDashBoard()
     {
-        StateHasChanged();
+        NavigationManager.NavigateTo("/");
+    }
+    
+    private void Submit()
+    {
+        NavigationManager.NavigateTo("/passo02");
     }
 
     public class SelectData

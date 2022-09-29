@@ -3,6 +3,7 @@
                          class="@classText"
                          type="@typeButton"
                          disabled="@Disabled"
+                         @onclick="@OnClick"
         >
     @ChildContent
 </button>
@@ -28,6 +29,9 @@
 
     [Parameter]
     public bool Disabled { get; set; } = false;
+    
+    [Parameter]
+    public EventCallback OnClick { get; set; }
     
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
