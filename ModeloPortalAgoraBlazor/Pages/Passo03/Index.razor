@@ -1,4 +1,4 @@
-﻿@page "/passo02"
+﻿@page "/passo03"
 
 @using System.Text.Json.Serialization
 @using ModeloPortalAgoraBlazor.Services.Interfaces
@@ -33,7 +33,7 @@
         <TitleSeparator Label="Situação patrimonial"/>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-1 md:gap-4 m-0 md:mt-6">
             <DataAnnotationsValidator/>
-            <TextInput @bind-Value="@Passo02.AplicacaoFinanceira" TypeMask="TypeMask.money" MinNumberValue="0" MaxNumberValue="999999999999"/>
+            <TextInput @bind-Value="@Passo02.AplicacaoFinanceira" TypeMask="TypeMask.money" MinNumberValue="0" MaxNumberValue="999999999999" />
             <TextInput @bind-Value="@Passo02.EmprestimosFinanciamentos" TypeMask="TypeMask.money" MinNumberValue="0" MaxNumberValue="999999999999"/>
             <TextInput @bind-Value="@Passo02.PatrimonioLiquido" TypeMask="TypeMask.money" MinNumberValue="0" MaxNumberValue="999999999999"/>
             <TextInput @bind-Value="@Passo02.Faturamento" TypeMask="TypeMask.money" MinNumberValue="0" MaxNumberValue="999999999999"/>
@@ -54,21 +54,11 @@
 
 
 @code {
-    private Passo02Dto Passo02;
+    private Passo02Dto Passo02 = new Passo02Dto();
 
     protected override void OnInitialized()
     {
         ChangeService.OnChange += OnChange;
-        Passo02 = (string.IsNullOrEmpty(ClienteState.Cliente.NomeUsuario) && string.IsNullOrEmpty(ClienteState.Cliente.Cnpj)) ? new Passo02Dto() :
-            new Passo02Dto
-            {
-                Faturamento = ClienteState.Cliente.Faturamento.ToString(),
-                AplicacaoFinanceira = ClienteState.Cliente.AplicacaoFinanceira.ToString(),
-                EmprestimosFinanciamentos = ClienteState.Cliente.EmprestimosFinanciamentos.ToString(),
-                PatrimonioLiquido = ClienteState.Cliente.Faturamento.ToString(),
-                EspecificacaoEnderecoCorrespondencia = ClienteState.Cliente.EspecificacaoEnderecoCorrespondencia,
-                TipoEnderecoCorrespondencia = ClienteState.Cliente.TipoEnderecoCorrespondencia,
-            };
     }
 
     private void OnChange()
@@ -97,14 +87,13 @@
         ClienteState.Cliente.Faturamento = Convert.ToDecimal(Passo02.Faturamento);
         ClienteState.Cliente.TipoEnderecoCorrespondencia = Passo02.TipoEnderecoCorrespondencia;
         ClienteState.Cliente.EspecificacaoEnderecoCorrespondencia = Passo02.EspecificacaoEnderecoCorrespondencia;
-        NavigationManager.NavigateTo("/Passo03");
     }
 
     private async void Voltar()
-    {
-            var alert = new AlertModal(JsRuntime);
-            var response = await alert.ShowConfirmAsync("Deseja sair da tela?", "Se sair sem salvar, os dados serão perdidos.", AlertIcon.Warning, "Sair");
-            if (!response) return;
-            NavigationManager.NavigateTo("/Passo01");
+    {        
+        var alert = new AlertModal(JsRuntime);
+        var response  = await alert.ShowConfirmAsync("Deseja sair da tela?", "Se sair sem salvar, os dados serão perdidos.", AlertIcon.Warning, "Sair");
+        if (!response) return;
+        NavigationManager.NavigateTo("/Passo02");
     }
 }

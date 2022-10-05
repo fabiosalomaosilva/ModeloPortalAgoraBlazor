@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Content Remove="Pages\Passo01\InformacoesAdicionaisPasso01.razor" />
+    <Content Remove="Components\Layout\ConfirmModal.razor" />
   </ItemGroup>
 
 </Project>

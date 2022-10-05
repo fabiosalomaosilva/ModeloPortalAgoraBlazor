@@ -20,6 +20,4 @@ public class DateValidation : ValidationAttribute
         if (dateValue > maxDate) ErrorMessage = "Data informada superior à máxima permitida";
         return new ValidationResult(ErrorMessage);
     }
-
-    
 }

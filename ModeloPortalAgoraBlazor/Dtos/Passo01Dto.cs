@@ -4,7 +4,7 @@ using ModeloPortalAgoraBlazor.Validations;
 
 namespace ModeloPortalAgoraBlazor.Dtos;
 
-public class Passo01
+public class Passo01Dto
 {
     [Display(Name = "Nome de usuário")]
     [Required(ErrorMessage = "Nome de usuário é obrigatório")]
@@ -19,7 +19,7 @@ public class Passo01
     public string Telefone { get; set; }
 
     [Display(Name = "Ramal")]
-    public int Ramal { get; set; }
+    public int? Ramal { get; set; }
 
     [Display(Name = "E-mail")]
     [EmailAddress(ErrorMessage = "o campo deve ter formato de e-mail")]
@@ -78,7 +78,6 @@ public class Passo01
     public string Numero { get; set; }
     
     [Display(Name = "Complemento")]
-    [Required(ErrorMessage = "Complemento é obrigatório")]
     public string Complemento { get; set; }
     
     [Display(Name = "Bairro")]

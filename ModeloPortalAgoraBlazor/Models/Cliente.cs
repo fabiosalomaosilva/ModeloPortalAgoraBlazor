@@ -27,11 +27,6 @@ namespace ModeloPortalAgoraBlazor.Models
         [Required(ErrorMessage = "E-mail é obrigatório")]
         public string Email { get; set; }
 
-        [Display(Name = "Confirmação do e-mail")]
-        [EmailAddress(ErrorMessage = "o campo deve ter formato de e-mail")]
-        [Compare("Email", ErrorMessage = "A comparação deve ser igual ao compo de e-mail")]
-        public string ConfirmarEmail { get; set; }
-
         [Display(Name = "CNPJ")]
         [Required(ErrorMessage = "CNPJ é obrigatório")]
         public string Cnpj { get; set; }
@@ -70,10 +65,25 @@ namespace ModeloPortalAgoraBlazor.Models
     public class ContaBancaria
     {
         public string Id { get; set; }
+        
+        [Display(Name = "Tipo")]
+        [Required(ErrorMessage = "Tipo é obrigatório")]
         public string Tipo { get; set; }
-        public int Agencia { get; set; }
-        public int Conta { get; set; }
-        public int Digito { get; set; }
+
+        [Display(Name = "Agência")]
+        [Required(ErrorMessage = "Agência é obrigatório")]
+        public int? Agencia { get; set; }
+        
+        [Display(Name = "Conta")]
+        [Required(ErrorMessage = "A Conta é obrigatória")]
+        public int? Conta { get; set; }
+    
+        [Display(Name = "Dígito")]
+        [Required(ErrorMessage = "Dígito é obrigatório")]
+        public int? Digito { get; set; }
+        
+        [Display(Name = "Banco")]
+        [Required(ErrorMessage = "Banco é obrigatório")]
         public int Banco { get; set; }
     }
     

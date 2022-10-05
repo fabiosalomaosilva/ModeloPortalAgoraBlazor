@@ -1,0 +1,79 @@
+﻿@using System.Text.Json.Serialization
+@using ModeloPortalAgoraBlazor.Services.Interfaces
+@inject HttpClient Http
+@inject ClienteState ClienteState
+@inject IChangeService ChangeService
+@inject IJSRuntime JsRuntime
+
+<EditForm OnValidSubmit="Submit" Model="@_conta" class="my-6">
+    <DataAnnotationsValidator/>
+    <div class="grid grid-cols-1 md:grid-cols-9 gap-1 md:gap-4 m-0 md:mt-6">
+        <SelectInput @bind-Value="@_conta.Banco" ColSpan="2">
+            @if (Bancos == null)
+            {
+                <option value="">Carregando dados...</option>
+            }
+            else
+            {
+                <option value="">Selecione um banco</option>
+                @foreach (var banco in Bancos)
+                {
+                    <option value="@banco.Value">@banco.Label</option>
+                }
+            }
+        </SelectInput>
+
+        <NumberInput @bind-Value="@_conta.Agencia" MaxNumberValue="9999" TypeMask="TypeMask.numeric" ColSpan="2"/>
+        <NumberInput @bind-Value="@_conta.Conta" ColSpan="2"/>
+        <NumberInput @bind-Value="@_conta.Digito" MaxNumberValue="9" TypeMask="TypeMask.numeric" ColSpan="1"/>
+        <SelectInput @bind-Value="@_conta.Tipo" ColSpan="2">
+            <option value="">Selecione uma opção</option>
+            <option value="Corrente">Corrente</option>
+            <option value="Invertimento">Investimento</option>
+        </SelectInput>
+    </div>
+
+    <div class="flex flex-row-reverse">
+        <ButtonInput Type="@TypeButton.submit" Color="ColorButton.secondary" Size="SizeButton.normal">Salvar</ButtonInput>
+        <ButtonInput Type="@TypeButton.button" Color="ColorButton.outlinePrimary" Size="SizeButton.normal" OnClick="Cancelar">Cancelar</ButtonInput>
+    </div>
+</EditForm>
+
+@code {
+    private ContaBancariaDto _conta = new();
+    private List<SelectDataDto> Bancos = new List<SelectDataDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var bancos = await Http.GetFromJsonAsync<List<SelectDataDto>>("data/Bancos.json");
+        Bancos = bancos;
+        var primeiro = Bancos.FirstOrDefault();
+    }
+
+
+    private async void Submit()
+    {
+        var conta = new ContaBancaria
+        {
+            Id = Guid.NewGuid().ToString(),
+            Tipo = _conta.Tipo,
+            Banco = Convert.ToInt32(_conta.Banco),
+            Agencia = _conta.Agencia,
+            Conta = _conta.Conta,
+            Digito = _conta.Digito
+        };
+        ClienteState.Cliente.ContasBancarias.Add(conta);
+        var alert = new AlertModal(JsRuntime);
+        await alert.ShowToastAsync("Conta adicionada!", AlertIcon.Success);
+
+        ClienteState.FormConta = false;
+        ChangeService.Change();
+    }
+
+    private async void Cancelar()
+    {
+        ClienteState.FormConta = false;
+        ChangeService.Change();
+    }
+
+}

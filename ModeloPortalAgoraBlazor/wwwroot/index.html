@@ -10,6 +10,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="css/app.css" rel="stylesheet"/>
     <script src="https://unpkg.com/imask"></script>
+    <link href="css/sweet.css" rel="stylesheet" />
+    <script src="js/sweet-alert.js"></script>
     <!--    <link href="ModeloPortalAgoraBlazor.styles.css" rel="stylesheet" />-->
     <script>
         tailwind.config = {
@@ -73,7 +75,27 @@
                 min: (min === undefined || min === null) ? 0 : min,
                 max: (max === undefined || min === null) ? 0 : max
             });
-    };
+    };  
+    
+    window.toast = (title, icon) => {
+        const ToastSwal = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        
+        console.log(title)
+        ToastSwal.fire({
+            icon: icon,
+            title: title
+        })
+    }
 </script>
 <script src="_framework/blazor.webassembly.js"></script>
 </body>
